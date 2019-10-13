@@ -1,0 +1,23 @@
+<apex:page showHeader="false" standardStylesheets="false">     
+    <apex:includeLightning />
+    <style>
+        body {
+            background-color: #2698fb;
+        }
+    </style>
+    
+    <body>
+        <div id="lightning" />
+    </body>
+	<script>
+		$Lightning.use("c:lwcExpensesApp", function() {
+        	 $Lightning.createComponent("c:expenses", {},
+              "lightning",
+              function(cmp) {
+                console.log("LWC component was created");
+                // do some stuff
+              }
+          );
+        });
+    </script>  
+</apex:page>

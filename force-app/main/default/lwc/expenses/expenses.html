@@ -1,0 +1,17 @@
+<template>
+    <template if:true={login}>
+        <c-login onshowvaluechange={hanldeShowValueChange}>
+        </c-login>
+    </template>
+
+    <template if:true={employeePage}>
+        <c-employee-page onshowvaluechange={hanldeShowValueChange} work-type-id={workTypeId}>
+        </c-employee-page>
+    </template>
+
+    <template if:true={adminPage}>
+            <c-admin-page onshowvaluechange={hanldeShowValueChange} work-type-id={workTypeId}>
+            </c-admin-page>
+        </template>
+
+</template>

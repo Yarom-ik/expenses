@@ -1,0 +1,47 @@
+<template>
+    <div class="slds-align_absolute-center" style="height:30rem">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+
+                <article class="slds-card">
+                    <div class="slds-p-around_xx-large">
+
+                        <div class="slds-card__body slds-align_absolute-center">
+                            <img src={logoUrl}>
+                        </div>
+                        <footer class="slds-card__footer">
+                            <div class="container-fluid">
+                                <div class="form-group">
+                                    <template if:true={message}>
+                                        {message}
+                                    </template>
+                                    <template if:true={error}>
+                                        {error}
+                                    </template>
+                                    <lightning-input type="text" class='login' name='login' onchange={setLoginPassword} label="Login"
+                                        placeholder="Enter your username"></lightning-input>
+
+                                    <lightning-input type="text" name="password" class="inpPassword" onchange={setLoginPassword}
+                                        label="Password" placeholder="Password">
+                                    </lightning-input>
+                                    <div class="slds-p-top_large">
+                                        <button type="submit" onclick={handleLoginUser}
+                                            class="slds-button slds-button_brand slds-button_stretch">Login</button>
+                                    </div>
+
+
+                                    <lightning-button variant="brand" label="Next" title="Next"
+                                        onclick={handleLoginUser} class="slds-button slds-button_stretch">
+                                    </lightning-button>
+
+                                </div>
+                            </div>
+                        </footer>
+
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+
+</template>
