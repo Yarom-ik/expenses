@@ -1,4 +1,157 @@
 <template>
-    Page employe
-    
+    <div class="slds-align_absolute-center">
+        <div class="slds-card" style="width:1000px">
+            <div class="slds-page-header">
+                <div class="slds-grid">
+                    <div class="slds-col slds-has-flexi-truncate">
+                        <header class="slds-media slds-wrap slds-media_center slds-has-flexi-truncate bundle-heading">
+                            <div class="slds-col slds-size_1-of-10 slds-col_bump-right slds-media__body">
+                                <h1 class="slds-card__header-title">
+                                    Expenses Office 3
+                                </h1>
+                            </div>
+                            <div class="slds-col slds-align_absolute-center">
+                                balanse $
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <lightning-button label="Income" slot="actions"></lightning-button>
+                                <lightning-button label="New Expense" slot="actions"></lightning-button>
+                            </div>
+                        </header>
+                    </div>
+                </div>
+
+                <ul class="slds-grid slds-page-header__detail-row">
+                    <li class="slds-col">
+                        <div class="card-body slds-grid">
+                            <div class="description slds-col slds-size_4-of-3 slds-p-right_small">
+                                <!-- 1 -->
+                                <div class="demo-only" style="width:300px">
+                                    <nav class="slds-nav-vertical" aria-label="Sub page">
+                                        <div class="slds-border_right">
+                                            <div class="slds-nav-vertical__section">
+                                                <div class="slds-grid slds-gutters">
+                                                    <div class="slds-col" style="width:120px">
+                                                        <h2 class="slds-nav-vertical__title">MONTHS</h2>
+                                                    </div>
+                                                    <div class="slds-col" style="width:90px">
+                                                        <h2>Amount</h2>
+                                                    </div>
+                                                    <div class="slds-col" style="width:90px">
+                                                        <h2>Income</h2>
+                                                    </div>
+                                                </div>
+                                                <ul aria-describedby="entity-header">
+                                                    <li class="slds-nav-vertical__item slds-is-active">
+
+                                                        <div class="slds-grid slds-gutters">
+                                                            <div class="slds-col" style="width:120px">
+                                                                <a href="javascript:void(0);"
+                                                                    class="slds-nav-vertical__action"
+                                                                    aria-current="true">Recesnt</a>
+
+                                                            </div>
+                                                            <div class="slds-col slds-p-top_x-small" style="width:90px">
+                                                                <span class="slds-badge ">
+                                                                    <span class="slds-assistive-text">:</span>3232
+                                                                </span>
+                                                            </div>
+                                                            <div class="slds-col slds-p-top_x-small" style="width:90px">
+                                                                <span class="slds-badge slds-col_bump-left">
+                                                                    <span class="slds-assistive-text">:</span>323
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="slds-nav-vertical__item">
+                                                        <a href="javascript:void(0);"
+                                                            class="slds-nav-vertical__action">Created
+                                                            by Me</a>
+                                                    </li>
+                                                    <li class="slds-nav-vertical__item">
+                                                        <a href="javascript:void(0);"
+                                                            class="slds-nav-vertical__action">Private
+                                                            Reports</a>
+                                                    </li>
+                                                </ul>
+                                                <!-- total -->
+                                                <div class="total">
+                                                    <div class="slds-grid slds-gutters slds-p-left_xx-large">
+
+                                                        <div class="slds-col " style="width:120px">
+                                                            <h2>Total</h2>
+                                                        </div>
+                                                        <div class="slds-col" style="width:90px">
+                                                            <h2>Reports</h2>
+                                                        </div>
+                                                        <div class="slds-col" style="width:90px">
+                                                            <h2>Reports</h2>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- total -->
+                                                <div class="years">
+                                                    <div class="slds-p-left_medium">
+                                                        Years:
+                                                        <div>
+                                                            <div class="slds-button-group" role="group">
+                                                                <button
+                                                                    class="slds-button slds-button_neutral">2016</button>
+                                                                <button
+                                                                    class="slds-button slds-button_neutral">2017</button>
+                                                                <button
+                                                                    class="slds-button slds-button_neutral">2018</button>
+                                                                <button
+                                                                    class="slds-button slds-button_neutral">2019</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </nav>
+                                </div>
+                                <!-- 1 -->
+                            </div>
+                            <div
+                                class="descriptor slds-col slds-grow-none slds-size_1-of-5 slds-p-horizontal_small word-wrap">
+                                <!-- 2 -->
+                                <lightning-accordion class="example-accordion"                                 
+                                    active-section-name="B">
+                                    <!-- onsectiontoggle={handleToggleSection} -->
+                                    <lightning-accordion-section name="A" label="Accordion Title A">
+
+                                        <p>This is the content area for section A.</p>
+                                        <p>.</p>
+                                        <p>.</p>
+                                        <p>.</p>
+                                        <p>The section height expands to fit your content.</p>
+                                    </lightning-accordion-section>
+
+                                    <lightning-accordion-section name="B" label="Accordion Title B">
+                                        <p>This is the content area for section B.</p>
+                                        <p>.</p>
+                                        <p>.</p>
+                                        <p>.</p>
+                                        <p>The section height expands to fit your content.</p>
+                                    </lightning-accordion-section>
+
+                                    <lightning-accordion-section name="C" label="Accordion Title C">
+                                        <p>This is the content area for section C.</p>
+                                        <p>.</p>
+                                        <p>.</p>
+                                        <p>.</p>
+                                        <p>The section height expands to fit your content.</p>
+                                    </lightning-accordion-section>
+                                </lightning-accordion>
+                                <!-- 2 -->
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
 </template>
