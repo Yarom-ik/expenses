@@ -24,4 +24,10 @@ export default class Expenses extends LightningElement {
         this.show = event.detail;
         this.showPage();
     }
+
+    authUser;
+    hanldeSetAuthUser(event) {
+        window.console.log('authUser= ' + JSON.stringify(event.detail));
+        this.authUser = event.detail;
+    }
 }

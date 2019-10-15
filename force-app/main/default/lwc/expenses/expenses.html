@@ -1,11 +1,11 @@
 <template>
     <template if:true={login}>
-        <c-login onshowvaluechange={hanldeShowValueChange}>
+        <c-login onshowvaluechange={hanldeShowValueChange} onsetauthuser={hanldeSetAuthUser}>
         </c-login>
     </template>
 
     <template if:true={employeePage}>
-        <c-employee-page onshowvaluechange={hanldeShowValueChange} work-type-id={workTypeId}>
+        <c-employee-page onshowvaluechange={hanldeShowValueChange} auth-user={authUser}>
         </c-employee-page>
     </template>
 

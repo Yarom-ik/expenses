@@ -7,11 +7,17 @@
                         <header class="slds-media slds-wrap slds-media_center slds-has-flexi-truncate bundle-heading">
                             <div class="slds-col slds-size_1-of-10 slds-col_bump-right slds-media__body">
                                 <h1 class="slds-card__header-title">
-                                    Expenses Office 3
+                                    Expenses
+                                    <template if:true={authUser}>
+                                        {authUser.Office__c}
+                                    </template>
                                 </h1>
                             </div>
                             <div class="slds-col slds-align_absolute-center">
                                 balanse $
+                                <template if:true={monthlyExpense}>
+                                    {monthlyExpense.Balance__c}
+                                </template>
                             </div>
                             <div class="slds-col slds-no-flex">
                                 <lightning-button label="Income" slot="actions"></lightning-button>
@@ -42,13 +48,15 @@
                                                     </div>
                                                 </div>
                                                 <ul aria-describedby="entity-header">
-                                                    <li class="slds-nav-vertical__item slds-is-active">
+                                                    <li class="slds-nav-vertical__item slds-is-active" onclick={showM}
+                                                        id="1">
 
                                                         <div class="slds-grid slds-gutters">
                                                             <div class="slds-col" style="width:120px">
-                                                                <a href="javascript:void(0);"
+                                                                <a onclick={showM} name="1"
                                                                     class="slds-nav-vertical__action"
-                                                                    aria-current="true">Recesnt</a>
+                                                                    aria-current="true">January</a>
+                                                                <!-- <button class="slds-nav-vertical__action" onclick={showM}>January </button> -->
 
                                                             </div>
                                                             <div class="slds-col slds-p-top_x-small" style="width:90px">
@@ -64,9 +72,22 @@
                                                         </div>
                                                     </li>
                                                     <li class="slds-nav-vertical__item">
-                                                        <a href="javascript:void(0);"
-                                                            class="slds-nav-vertical__action">Created
-                                                            by Me</a>
+                                                        <div class="slds-grid slds-gutters">
+                                                            <div class="slds-col" style="width:120px">
+                                                                <a onclick={showM} name="2"
+                                                                    class="slds-nav-vertical__action">February</a>
+                                                            </div>
+                                                            <div class="slds-col slds-p-top_x-small" style="width:90px">
+                                                                <span class="slds-badge ">
+                                                                    <span class="slds-assistive-text">:</span>123
+                                                                </span>
+                                                            </div>
+                                                            <div class="slds-col slds-p-top_x-small" style="width:90px">
+                                                                <span class="slds-badge slds-col_bump-left">
+                                                                    <span class="slds-assistive-text">:</span>313
+                                                                </span>
+                                                            </div>
+                                                        </div>
                                                     </li>
                                                     <li class="slds-nav-vertical__item">
                                                         <a href="javascript:void(0);"
@@ -94,16 +115,20 @@
                                                     <div class="slds-p-left_medium">
                                                         Years:
                                                         <div>
-                                                            <div class="slds-button-group" role="group">
-                                                                <button
-                                                                    class="slds-button slds-button_neutral">2016</button>
-                                                                <button
-                                                                    class="slds-button slds-button_neutral">2017</button>
-                                                                <button
-                                                                    class="slds-button slds-button_neutral">2018</button>
-                                                                <button
-                                                                    class="slds-button slds-button_neutral">2019</button>
-                                                            </div>
+                                                            <lightning-button-group>
+                                                                <template for:each={dates4years} for:item="date">
+                                                                    <lightning-button key={date.Id} label={date}>
+                                                                    </lightning-button>
+
+                                                                </template>
+                                                            </lightning-button-group>
+
+                                                            <!-- <div class="slds-button-group" role="group">
+                                                                <template for:each={dates4years} for:item="date">                                                            
+                                                                <button class="slds-button slds-button_neutral" key={date.Id}>{date}</button>                                                                                                      -->
+
+
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -114,21 +139,33 @@
                                 <!-- 1 -->
                             </div>
                             <div
-                                class="descriptor slds-col slds-grow-none slds-size_1-of-5 slds-p-horizontal_small word-wrap">
+                                class="descriptor slds-col slds-grow-none slds-size_4-of-7 slds-p-horizontal_small word-wrap">
                                 <!-- 2 -->
-                                <lightning-accordion class="example-accordion"                                 
-                                    active-section-name="B">
-                                    <!-- onsectiontoggle={handleToggleSection} -->
-                                    <lightning-accordion-section name="A" label="Accordion Title A">
+                                <template if:true={expensesCard}>
+                                    <lightning-accordion class="example-accordion" active-section-name="B">
+                                        <!-- onsectiontoggle={handleToggleSection} -->
+                                        <template for:each={expensesCard} for:item="mapKey">
+                                            <lightning-accordion-section key={mapKey.key} name="A" label={mapKey.key}>
 
-                                        <p>This is the content area for section A.</p>
-                                        <p>.</p>
-                                        <p>.</p>
-                                        <p>.</p>
-                                        <p>The section height expands to fit your content.</p>
-                                    </lightning-accordion-section>
+                                                <!-- <template for:each={mapKey.value} for:item="value"> -->
+                                                    <!-- <div key={value}>
+                                                        <p>{value.Description__c}</p><br />
+                                                    </div> -->
 
-                                    <lightning-accordion-section name="B" label="Accordion Title B">
+                                                    <lightning-datatable key-field="Id"
+                                                        data={mapKey.value}
+                                                        columns={columns} 
+                                                        onsave={handleSave}
+                                                        hide-checkbox-column="false"
+                                                        onrowaction={deleteExpenseCard}
+                                                        draft-values={draftValues}>
+                                                    </lightning-datatable>
+
+                                                <!-- </template> -->
+
+                                            </lightning-accordion-section>
+                                        </template>
+                                        <!-- <lightning-accordion-section name="B" label="Accordion Title B">
                                         <p>This is the content area for section B.</p>
                                         <p>.</p>
                                         <p>.</p>
@@ -142,8 +179,9 @@
                                         <p>.</p>
                                         <p>.</p>
                                         <p>The section height expands to fit your content.</p>
-                                    </lightning-accordion-section>
-                                </lightning-accordion>
+                                    </lightning-accordion-section> -->
+                                    </lightning-accordion>
+                                </template>
                                 <!-- 2 -->
                             </div>
                         </div>

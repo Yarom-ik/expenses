@@ -39,16 +39,6 @@ export default class Login extends LightningElement {
 
     authUser = {};
     handleLoginUser() {
-        // const allValid = [...this.template.querySelectorAll('lightning-input')]
-        //     .reduce((validSoFar, inputCmp) => {
-        //         inputCmp.reportValidity();
-        //         return validSoFar && inputCmp.checkValidity();
-        //     }, true);
-        // if (!allValid) {
-        //     // eslint-disable-next-line no-alert
-        //     alert('Please update the invalid form entries and try again.');
-        //     return;
-        // }
         let inputLogin = this.template.querySelector(".login");
         let inputPassword = this.template.querySelector(".inpPassword");
         let valueLogin = inputLogin.value;
@@ -82,7 +72,8 @@ export default class Login extends LightningElement {
                     }else if (this.authUser.Admin__c === false) {
                         this.showPageValue = 1;
                     }
-                    this.showPage();
+                    this.showPage();                 
+                    this.sendContact();
                 }else{
                     window.console.log('return null ');
                 }               
@@ -94,4 +85,14 @@ export default class Login extends LightningElement {
                 this.message = 'Login or password incorrect';
             });
     }
+
+    sendContact(){
+     // Creates the event with the data authUser.
+     const selectedEvent = new CustomEvent("setauthuser", {
+        detail: this.authUser
+    });
+    // Dispatches the event.
+    this.dispatchEvent(selectedEvent);
+    }
+
 }
