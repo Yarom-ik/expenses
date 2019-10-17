@@ -13,7 +13,7 @@ import ID_FIELD from '@salesforce/schema/ExpenseCard__c.Id';
 const COLS = [
   { label: 'Description', fieldName: 'Description__c', editable: true },
   { label: 'Amount', fieldName: 'Amount__c', type: 'phone', editable: true },
-  { label: 'Action', type: 'button', typeAttributes: { variant: 'base', label: 'Delete', name: 'delete', onclick:'deleteExpenseCard'} }
+  { label: 'Action', type: 'button', typeAttributes: { variant: 'base', label: 'Delete', name: 'delete', onclick: 'deleteExpenseCard' } }
 ];
 
 export default class EmployeePage extends LightningElement {
@@ -68,6 +68,7 @@ export default class EmployeePage extends LightningElement {
             this.expensesCard.push({ key: key, value: result[key] });
           }
         }
+        window.console.log('ExpensesCardsRETURN=' + JSON.stringify(this.expensesCard));
 
       })
       .catch(error => {
@@ -111,9 +112,23 @@ export default class EmployeePage extends LightningElement {
       });
   }
 
-  deleteExpenseCard(event){
+  deleteExpenseCard(event) {
     // eslint-disable-next-line no-alert
     alert('DELETE??' + event.detail.row.Id);
   }
 
+  handleSum() {
+
+    var el = this.template.querySelector('lightning-datatable');
+    // eslint-disable-next-line no-console
+    console.log('el = ' + el);
+    let selected = el.getSelectedRows();
+    // eslint-disable-next-line no-console
+    console.log('selected = ' + selected);
+
+
+    let table = this.template.querySelector(".sss");
+
+    window.console.log('SUM ' + table);
+  }
 }

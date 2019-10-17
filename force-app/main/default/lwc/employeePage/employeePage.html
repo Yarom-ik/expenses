@@ -152,7 +152,7 @@
                                                         <p>{value.Description__c}</p><br />
                                                     </div> -->
 
-                                                    <lightning-datatable key-field="Id"
+                                                    <lightning-datatable class="sa" key-field="Id"
                                                         data={mapKey.value}
                                                         columns={columns} 
                                                         onsave={handleSave}
@@ -160,7 +160,17 @@
                                                         onrowaction={deleteExpenseCard}
                                                         draft-values={draftValues}>
                                                     </lightning-datatable>
-
+                                                    <div class="slds-m-around--medium">
+                                                        <p>Total: {mapKey.value}</p>
+                                                        <template for:each={mapKey.value} for:item="value">
+                                                                <div class="sss" key={value}>
+                                                            <p>{value.Amount__c} </p>
+                                                                </div>
+                                                        </template>
+                                                        <lightning-button variant="brand" label="Next" title="Next" onclick={handleSum}
+                                                        class="slds-m-left_x-small">
+                                                    </lightning-button>
+                                                    </div>
                                                 <!-- </template> -->
 
                                             </lightning-accordion-section>
