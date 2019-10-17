@@ -16,7 +16,7 @@
                             <div class="slds-col slds-align_absolute-center">
                                 balanse $
                                 <template if:true={monthlyExpense}>
-                                    {monthlyExpense.Balance__c}
+                                    {monthlyExpense.Balance}
                                 </template>
                             </div>
                             <div class="slds-col slds-no-flex">
@@ -71,24 +71,33 @@
                                                             </div>
                                                         </div>
                                                     </li>
-                                                    <li class="slds-nav-vertical__item">
-                                                        <div class="slds-grid slds-gutters">
-                                                            <div class="slds-col" style="width:120px">
-                                                                <a onclick={showM} name="2"
-                                                                    class="slds-nav-vertical__action">February</a>
+                                                    <template if:true={monthlyExpense}>
+                                                        <template for:each={monthlyExpense.monthlyExpenseList} for:item="monthly">
+                                                        <li class="slds-nav-vertical__item" key={monthly.MonthDate__c}>
+                                                            <div class="slds-grid slds-gutters">
+                                                                <div class="slds-col" style="width:120px">
+                                                                    <a onclick={showM} name="2" 
+                                                                        class="slds-nav-vertical__action">
+                                                                        
+                                                                        <lightning-formatted-date-time value={monthly.MonthDate__c} month="long"></lightning-formatted-date-time>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="slds-col slds-p-top_x-small"
+                                                                    style="width:90px">
+                                                                    <span class="slds-badge ">
+                                                                        <span class="slds-assistive-text">:</span>{monthly.SpentAmount__c}
+                                                                    </span>
+                                                                </div>
+                                                                <div class="slds-col slds-p-top_x-small"
+                                                                    style="width:90px">
+                                                                    <span class="slds-badge slds-col_bump-left">
+                                                                        <span class="slds-assistive-text">:</span>{monthly.Reminder__c}
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                            <div class="slds-col slds-p-top_x-small" style="width:90px">
-                                                                <span class="slds-badge ">
-                                                                    <span class="slds-assistive-text">:</span>123
-                                                                </span>
-                                                            </div>
-                                                            <div class="slds-col slds-p-top_x-small" style="width:90px">
-                                                                <span class="slds-badge slds-col_bump-left">
-                                                                    <span class="slds-assistive-text">:</span>313
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </li>
+                                                        </li>
+                                                        </template>
+                                                    </template>
                                                     <li class="slds-nav-vertical__item">
                                                         <a href="javascript:void(0);"
                                                             class="slds-nav-vertical__action">Private
@@ -103,10 +112,14 @@
                                                             <h2>Total</h2>
                                                         </div>
                                                         <div class="slds-col" style="width:90px">
-                                                            <h2>Reports</h2>
+                                                                <template if:true={monthlyExpense}>
+                                                                    <h2>{monthlyExpense.totalAmount}</h2>
+                                                                </template>
                                                         </div>
                                                         <div class="slds-col" style="width:90px">
-                                                            <h2>Reports</h2>
+                                                                <template if:true={monthlyExpense}>
+                                                                        <h2>{monthlyExpense.totalIncome}</h2>
+                                                                </template>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -144,52 +157,20 @@
                                 <template if:true={expensesCard}>
                                     <lightning-accordion class="example-accordion" active-section-name="B">
                                         <!-- onsectiontoggle={handleToggleSection} -->
-                                        <template for:each={expensesCard} for:item="mapKey">
-                                            <lightning-accordion-section key={mapKey.key} name="A" label={mapKey.key}>
+                                        <template for:each={expensesCard} for:item="card">
+                                            <lightning-accordion-section key={card.cardDateUnique} name="A"
+                                                label={card.cardDateUnique}>
 
-                                                <!-- <template for:each={mapKey.value} for:item="value"> -->
-                                                    <!-- <div key={value}>
-                                                        <p>{value.Description__c}</p><br />
-                                                    </div> -->
-
-                                                    <lightning-datatable class="sa" key-field="Id"
-                                                        data={mapKey.value}
-                                                        columns={columns} 
-                                                        onsave={handleSave}
-                                                        hide-checkbox-column="false"
-                                                        onrowaction={deleteExpenseCard}
-                                                        draft-values={draftValues}>
-                                                    </lightning-datatable>
-                                                    <div class="slds-m-around--medium">
-                                                        <p>Total: {mapKey.value}</p>
-                                                        <template for:each={mapKey.value} for:item="value">
-                                                                <div class="sss" key={value}>
-                                                            <p>{value.Amount__c} </p>
-                                                                </div>
-                                                        </template>
-                                                        <lightning-button variant="brand" label="Next" title="Next" onclick={handleSum}
-                                                        class="slds-m-left_x-small">
-                                                    </lightning-button>
-                                                    </div>
-                                                <!-- </template> -->
+                                                <lightning-datatable key-field="Id" data={card.expenseCardList}
+                                                    columns={columns} onsave={handleSave} hide-checkbox-column="false"
+                                                    onrowaction={deleteExpenseCard} draft-values={draftValues}>
+                                                </lightning-datatable>
+                                                <div class="slds-m-around--medium">
+                                                    <p>Total: {card.totalSum}</p>
+                                                </div>
 
                                             </lightning-accordion-section>
                                         </template>
-                                        <!-- <lightning-accordion-section name="B" label="Accordion Title B">
-                                        <p>This is the content area for section B.</p>
-                                        <p>.</p>
-                                        <p>.</p>
-                                        <p>.</p>
-                                        <p>The section height expands to fit your content.</p>
-                                    </lightning-accordion-section>
-
-                                    <lightning-accordion-section name="C" label="Accordion Title C">
-                                        <p>This is the content area for section C.</p>
-                                        <p>.</p>
-                                        <p>.</p>
-                                        <p>.</p>
-                                        <p>The section height expands to fit your content.</p>
-                                    </lightning-accordion-section> -->
                                     </lightning-accordion>
                                 </template>
                                 <!-- 2 -->

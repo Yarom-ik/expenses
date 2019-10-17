@@ -10,21 +10,60 @@ global with sharing class ExpensesController {
         
     }
 
-    @AuraEnabled
-    public static MonthlyExpense__c getMouthlyExpense(String conId, String month, String year){
+    public class MonthlyExpense{
+        @AuraEnabled
+        public Decimal Balance;
+        @AuraEnabled
+        public Decimal totalAmount;
+        @AuraEnabled
+        public Decimal totalIncome;
+        @AuraEnabled
+        public List<MonthlyExpense__c> monthlyExpenseList;
+    }
 
-        Date myDate = Date.newInstance(2019, 12, 10);                
-        MonthlyExpense__c monthlyExpense = [SELECT Balance__c, MonthDate__c FROM MonthlyExpense__c WHERE Keeper__c =:conId LIMIT 1];            
+    @AuraEnabled
+    public static MonthlyExpense getMouthlyExpense(String conId, String month, String year){
+
+        Date myDate = Date.newInstance(2019, 01, 13);                
+        List<MonthlyExpense__c> monthlylist = [SELECT Balance__c, MonthDate__c, SpentAmount__c, Reminder__c FROM MonthlyExpense__c WHERE Keeper__c =:conId LIMIT 1];            
+
+        // List<MonthlyExpense> monthlyExpenseL = new List<MonthlyExpense>();
+
+        MonthlyExpense monthlyExpense = new MonthlyExpense();
+        monthlyExpense.Balance = monthlylist[0].Balance__c;
+        
+        for(MonthlyExpense__c mx: monthlylist){
+            monthlyExpense.totalAmount =+ mx.SpentAmount__c; 
+            monthlyExpense.totalIncome =+ mx.Reminder__c; 
+            // DateTime dt = DateTime.now();
+            // Date monthName = dt.format('MMMMM');
+            // mx.MonthDate__c = monthName;
+            
+        }  
+        monthlyExpense.monthlyExpenseList = monthlylist;
+        // monthlyExpenseL.add(monthlyExpense);
+        
+        
+        
         System.debug(' MonthlyExpense__c ' + monthlyExpense);
 
         return monthlyExpense;
         
     }
 
-    @AuraEnabled
-    public static   Map<Date, List<ExpenseCard__c>> getExpenseCard(){
+    public class Expenses{
+        @AuraEnabled
+        public date cardDateUnique;
+        @AuraEnabled
+        public Decimal totalSum;
+        @AuraEnabled
+        public List<ExpenseCard__c> expenseCardList;
+    }
 
-        Map<Date, List<ExpenseCard__c>> m1 = new Map<Date, List<ExpenseCard__c>>();
+    @AuraEnabled
+    public static  List<Expenses> getExpenseCard(){
+
+        List<Expenses> m1 = new List<Expenses>();
 
         Set<Date> dates = new Set<Date>();
         for(AggregateResult ar : [SELECT CardDate__c FROM ExpenseCard__c GROUP BY CardDate__c]){
@@ -34,37 +73,19 @@ global with sharing class ExpensesController {
 
         for (Date dd : dates){
                 List<ExpenseCard__c> ex = new List<ExpenseCard__c>();
-            for(ExpenseCard__c xx : expenseCards){
+                Decimal summ = 0;
+            Expenses exp = new Expenses();
+            for(ExpenseCard__c xx : expenseCards){        
                 if(dd == xx.CardDate__c){
                     ex.add(xx);
-                }
+                    summ = summ + xx.Amount__c;
+                }        
             }
-                m1.put(dd,ex);
+            exp.cardDateUnique = dd;
+            exp.totalSum = summ;
+            exp.expenseCardList = ex;
+            m1.add(exp);
         }
-
-        // Map<Date, Map<Decimal, List<ExpenseCard__c>>> m1 = new Map<Date, Map<Decimal, List<ExpenseCard__c>>>();
-
-        //     Set<Date> dates = new Set<Date>();
-        //     for(AggregateResult ar : [SELECT CardDate__c FROM ExpenseCard__c GROUP BY CardDate__c]){
-        //         dates.add((Date) ar.get('CardDate__c'));    
-        //     }
-        //     ExpenseCard__c[] expenseCards = [SELECT CardDate__c, Description__c, Amount__c FROM ExpenseCard__c WHERE CardDate__c IN :dates];
-
-        //     for (Date dd : dates){
-        //             Map<Decimal, List<ExpenseCard__c>> ex = new Map<Decimal, List<ExpenseCard__c>>();
-        //             Decimal summ = 0;
-        //         List<ExpenseCard__c> listEx = new List<ExpenseCard__c>();
-        //         for(ExpenseCard__c xx : expenseCards){
-                    
-        //             if(dd == xx.CardDate__c){
-        //                 listEx.add(xx);
-        //                 summ = summ + xx.Amount__c;
-        //             }        
-        //         }
-        //         ex.put(summ,listEx);
-        //             m1.put(dd,ex);
-        //     }
-
 	
        System.debug('m1 ' + m1); 
 

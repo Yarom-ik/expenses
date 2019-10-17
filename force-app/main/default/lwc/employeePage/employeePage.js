@@ -22,10 +22,11 @@ export default class EmployeePage extends LightningElement {
 
   @track monthlyExpense;
 
-  loadData() {
+  loadMontlyExpense() {
     getMouthlyExpense({ conId: this.authUser.Id })
       .then(result => {
         this.monthlyExpense = result;
+        window.console.log('monthlyExpense ' + JSON.stringify(this.monthlyExpense));
 
       })
       .catch(error => {
@@ -36,7 +37,7 @@ export default class EmployeePage extends LightningElement {
 
   connectedCallback() {
     window.console.log('run load ' + this.authUser.Id);
-    this.loadData();
+    this.loadMontlyExpense();
     for (let i = -2; i <= 1; i++) {
       this.dates4years.push(new Date().getFullYear() + i);
     }
@@ -62,14 +63,7 @@ export default class EmployeePage extends LightningElement {
         //this.expensesCard = result;
         window.console.log('ExpensesCards=' + JSON.stringify(result));
         this.expensesCard = [];
-        for (let key in result) {
-          // Preventing unexcepted data
-          if (result.hasOwnProperty(key)) { // Filtering the data in the loop
-            this.expensesCard.push({ key: key, value: result[key] });
-          }
-        }
-        window.console.log('ExpensesCardsRETURN=' + JSON.stringify(this.expensesCard));
-
+        this.expensesCard = result;
       })
       .catch(error => {
         this.error = error;
