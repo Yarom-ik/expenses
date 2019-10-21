@@ -3,6 +3,7 @@ import { LightningElement, track, api } from 'lwc';
 import getMouthlyExpense from '@salesforce/apex/ExpensesController.getMouthlyExpense';
 import getExpenseCard from '@salesforce/apex/ExpensesController.getExpenseCard';
 import saveExpenseCard from '@salesforce/apex/ExpensesController.saveExpenseCard';
+import deleteExpenseCard from '@salesforce/apex/ExpensesController.deleteExpenseCard';
 
 import { updateRecord } from 'lightning/uiRecordApi';
 //import { refreshApex } from '@salesforce/apex';
@@ -41,6 +42,7 @@ export default class EmployeePage extends LightningElement {
   loadMontlyExpense() {
     getMouthlyExpense({ conId: this.authUser.Id })
       .then(result => {
+        this.monthlyExpense = [];
         this.monthlyExpense = result;
         window.console.log('monthlyExpense ' + JSON.stringify(this.monthlyExpense));
 
@@ -109,7 +111,7 @@ export default class EmployeePage extends LightningElement {
   @track expensesCard = [];
 
   loadDataExpenseCard() {
-    getExpenseCard({ selectedDate: this.selectedDate })
+    getExpenseCard({ selectedDate: this.selectedDate, conId: this.authUser.Id })
       .then(result => {
         if (result) {
           window.console.log('ExpensesCards=' + JSON.stringify(result));
@@ -171,7 +173,30 @@ export default class EmployeePage extends LightningElement {
 
   deleteExpenseCard(event) {
     // eslint-disable-next-line no-alert
-    alert('DELETE??' + event.detail.row.Id);
+    if (window.confirm('Are you sure to DELETE?'))
+      deleteExpenseCard({ expenseCardId: event.detail.row.Id })
+        .then(() => {
+          this.dispatchEvent(
+            new ShowToastEvent({
+              title: 'Success',
+              message: 'Expense Card deleted',
+              variant: 'success',
+            }),
+          );
+          this.loadMontlyExpense();
+          this.loadDataExpenseCard();
+        })
+        .catch((error) => {
+          this.error = error;
+          this.contacts = undefined;
+          this.dispatchEvent(
+            new ShowToastEvent({
+              title: 'Error Delete Expense Card',
+              message: error.body.message,
+              variant: 'error',
+            }),
+          );
+        });
   }
 
   newExpenseCard = { 'sobjectType': 'ExpenseCard__c' };
@@ -214,9 +239,10 @@ export default class EmployeePage extends LightningElement {
     if (!inputAmount.checkValidity() || !inputDate.checkValidity() || !inputDescription.checkValidity()) {
       return;
     }
-    if(this.newExpenseCard.CardDate__c === undefined){
+    if (this.newExpenseCard.CardDate__c === undefined) {
       this.newExpenseCard.CardDate__c = this.dateNow;
     }
+    this.newExpenseCard.CardKeeper__c = this.authUser.Id;
     saveExpenseCard({ expenseCard: this.newExpenseCard })
       .then(result => {
         if (result === "ok") {
@@ -227,6 +253,8 @@ export default class EmployeePage extends LightningElement {
             variant: 'success'
           }));
           this.closeModal();
+          this.loadMontlyExpense();
+          this.loadDataExpenseCard();
         }
       })
       .catch(error => {

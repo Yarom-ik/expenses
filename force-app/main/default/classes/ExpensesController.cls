@@ -101,13 +101,13 @@ global with sharing class ExpensesController {
     }
 
     @AuraEnabled
-    public static  List<Expenses> getExpenseCard(Date selectedDate){
+    public static  List<Expenses> getExpenseCard(Date selectedDate, String conId){
 
         System.debug('selecteddate= ' + selectedDate);
         List<Expenses> m1 = new List<Expenses>();
 
         Set<Date> dates = new Set<Date>();
-        for(AggregateResult ar : [SELECT CardDate__c FROM ExpenseCard__c WHERE MonthlyExpense__r.MonthDate__c =: selectedDate GROUP BY CardDate__c]){
+        for(AggregateResult ar : [SELECT CardDate__c FROM ExpenseCard__c WHERE MonthlyExpense__r.Keeper__c =:conId AND MonthlyExpense__r.MonthDate__c =: selectedDate GROUP BY CardDate__c ORDER BY CardDate__c ASC]){
             dates.add((Date) ar.get('CardDate__c'));    
         }
         System.debug('dates = '+ dates);
@@ -115,7 +115,7 @@ global with sharing class ExpensesController {
             return null;
         }
 
-        ExpenseCard__c[] expenseCards = [SELECT CardDate__c, Description__c, Amount__c FROM ExpenseCard__c WHERE CardDate__c IN :dates];
+        ExpenseCard__c[] expenseCards = [SELECT CardDate__c, Description__c, Amount__c FROM ExpenseCard__c WHERE CardKeeper__c =:conId AND CardDate__c IN :dates ORDER BY CardDate__c ASC];
         System.debug('expenseCards = '+ expenseCards);
         if(expenseCards != null){
             for (Date dd : dates){
@@ -146,12 +146,21 @@ global with sharing class ExpensesController {
     @AuraEnabled
     public static string saveExpenseCard(ExpenseCard__c expenseCard){
         System.debug('expenseCard= ' + expenseCard);
-        // try {
-        //     insert expenseCard;
-        // } catch (Exception) {
+        try {
+            insert expenseCard;
+        } catch (DmlException e) {
             
-        // }
+        }
         return 'ok';
+    }
+
+    @AuraEnabled
+    public static void deleteExpenseCard(String expenseCardId){
+       try {
+            delete [SELECT id FROM ExpenseCard__c WHERE id =: expenseCardId];
+        } catch (DmlException e) {
+            
+        } 
     }
 
 }
