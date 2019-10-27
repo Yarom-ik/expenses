@@ -21,7 +21,7 @@
                             </div>
                             <div class="slds-col slds-no-flex">
                                 <lightning-button label="Income"></lightning-button>
-                                <lightning-button label="New Expense" onclick={openmodal} >
+                                <lightning-button label="New Expense" onclick={openmodal}>
                                 </lightning-button>
                             </div>
                         </header>
@@ -104,10 +104,9 @@
                                                                     <div class="slds-col slds-p-top_x-small"
                                                                         style="width:90px">
                                                                         <span class="slds-badge slds-col_bump-left">
-                                                                            <template
-                                                                                if:true={monthly.oppy.Reminder__c}>
+                                                                            <template if:true={monthly.oppy.Balance__c}>
                                                                                 <span key={monthly.oppy.MonthDate__c}
-                                                                                    class="slds-assistive-text">:</span>{monthly.oppy.Reminder__c}
+                                                                                    class="slds-assistive-text">:</span>{monthly.oppy.Balance__c}
                                                                             </template>
                                                                         </span>
                                                                     </div>
@@ -166,35 +165,39 @@
                             <div
                                 class="descriptor slds-col slds-grow-none slds-size_4-of-7 slds-p-horizontal_small word-wrap">
                                 <!-- 2 -->
-                                <template if:true={expensesCard}>
-                                    <lightning-accordion class="example-accordion">
-                                        <!-- onsectiontoggle={handleToggleSection} -->
-                                        <template for:each={expensesCard} for:item="card">
-                                            <lightning-accordion-section key={card.cardDateUnique}
-                                                label={card.cardDateUnique}>
+                                <div class="slds-scrollable_y" style="height:37rem; width:35rem">
+                                    <template if:true={expensesCard}>
+                                        <lightning-accordion class="example-accordion">
+                                            <!-- onsectiontoggle={handleToggleSection} -->
+                                            <template for:each={expensesCard} for:item="card">
+                                                <lightning-accordion-section key={card.cardDateUnique}
+                                                    label={card.cardDateUnique}>
 
-                                                <lightning-datatable key-field="Id" data={card.expenseCardList}
-                                                    columns={columns} onsave={handleSave} hide-checkbox-column="false"
-                                                    onrowaction={deleteExpenseCard} draft-values={draftValues}>
-                                                </lightning-datatable>
-                                                <!-- <div class="slds-m-around--medium">
+                                                    <lightning-datatable key-field="Id" data={card.expenseCardList}
+                                                        columns={columns} onsave={handleSave}
+                                                        hide-checkbox-column="false" onrowaction={deleteExpenseCard}
+                                                        draft-values={draftValues}>
+                                                    </lightning-datatable>
+                                                    <!-- <div class="slds-m-around--medium">
                                                     <p>Total: {card.totalSum}</p>
                                                 </div> -->
-                                                <dl class="slds-dl_horizontal slds-p-left_xx-large">
-                                                    <dt class="slds-dl_horizontal__label slds-text-heading_small">Total:
-                                                    </dt>
-                                                    <dd
-                                                        class="slds-dl_horizontal__detail slds-p-left_xx-large slds-text-heading_small">
-                                                        {card.totalSum}</dd>
-                                                </dl>
+                                                    <dl class="slds-dl_horizontal slds-p-left_xx-large">
+                                                        <dt class="slds-dl_horizontal__label slds-text-heading_small">
+                                                            Total:
+                                                        </dt>
+                                                        <dd
+                                                            class="slds-dl_horizontal__detail slds-p-left_xx-large slds-text-heading_small">
+                                                            ${card.totalSum}</dd>
+                                                    </dl>
 
-                                            </lightning-accordion-section>
-                                        </template>
-                                    </lightning-accordion>
-                                </template>
-                                <template if:true={messageCard}>
-                                    <p>{messageCard}</p>
-                                </template>
+                                                </lightning-accordion-section>
+                                            </template>
+                                        </lightning-accordion>
+                                    </template>
+                                    <template if:true={messageCard}>
+                                        <p>{messageCard}</p>
+                                    </template>
+                                </div>
                                 <!-- 2 -->
                             </div>
                         </div>
@@ -220,18 +223,21 @@
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                         <div class="slds-p-around_medium">
                             <div style="width: 150px;">
-                                <lightning-input type="number" class="inputAmount" onchange={handleSetInputModal} name="amount" min="1" label="Amount" placeholder="Amount..."></lightning-input>
-                                <lightning-input type="date" class="inputDate" value={dateNow} name="date" onchange={handleSetInputModal} label="Date"></lightning-input>
+                                <lightning-input type="number" class="inputAmount" onchange={handleSetInputModal}
+                                    name="amount" min="1" label="Amount" placeholder="Amount..."></lightning-input>
+                                <lightning-input type="date" class="inputDate" value={dateNow} name="date"
+                                    onchange={handleSetInputModal} label="Date"></lightning-input>
                             </div>
-                            <lightning-textarea max-length="200" class="inputDescription" onchange={handleSetInputModal} name="description" label="Description"
-                                placeholder="Text..."></lightning-textarea>
+                            <lightning-textarea max-length="200" class="inputDescription" onchange={handleSetInputModal}
+                                name="description" label="Description" placeholder="Text..."></lightning-textarea>
 
                         </div>
                     </div>
                     <footer class="slds-modal__footer">
                         <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <lightning-button label="Save" variant="brand" onclick={handleSaveExpenseCard}></lightning-button>
+                        <lightning-button label="Save" variant="brand" onclick={handleSaveExpenseCard}>
+                        </lightning-button>
                     </footer>
                 </div>
             </section>

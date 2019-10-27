@@ -1,6 +1,6 @@
 global with sharing class ExpensesController {
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     global static Contact loginUser(String login, String pass){
        Contact con = [SELECT id, Admin__c, Office__c FROM Contact WHERE Email =:login AND Password__c =:pass LIMIT 1];
 
@@ -47,14 +47,15 @@ global with sharing class ExpensesController {
 }
 
     @AuraEnabled
-    public static MonthlyExpense getMouthlyExpense(String conId){
+    public static MonthlyExpense getMouthlyExpense(String conId, Integer selectedDate){
+
+        System.debug('getMouthlyExpenseDATE= ' + selectedDate);
+        // Date selectedYear = Date.newInstance(selectedDate,)
               
-        List<MonthlyExpense__c> monthlylist = [SELECT Balance__c, MonthDate__c, SpentAmount__c, Reminder__c FROM MonthlyExpense__c WHERE Keeper__c =:conId];   
+        List<MonthlyExpense__c> monthlylist = [SELECT Balance__c, MonthDate__c, SpentAmount__c, Reminder__c FROM MonthlyExpense__c WHERE Keeper__c =:conId AND CALENDAR_YEAR(MonthDate__c) =: selectedDate];   
         MonthlyExpenseWrapper[] oppyList = new List<MonthlyExpenseWrapper>();         
 
         MonthlyExpense monthlyExpense = new MonthlyExpense();
-        
-        List<MonthlyExpense__c> monthlylistNew = new List<MonthlyExpense__c>();
         
         monthlyExpense.totalAmount = 0;
         monthlyExpense.totalIncome = 0;
@@ -63,8 +64,8 @@ global with sharing class ExpensesController {
         List<MonthlyExpense__c> mes = new List<MonthlyExpense__c>();
         for(MonthlyExpense__c mx: monthlylist){
             monthlyExpense.totalAmount += mx.SpentAmount__c; 
-            monthlyExpense.totalIncome += mx.Reminder__c;
-            monthlyExpense.Balance += mx.Balance__c;
+            monthlyExpense.totalIncome += mx.Balance__c;
+            monthlyExpense.Balance += mx.Reminder__c;
             MonthlyExpense__c m = new MonthlyExpense__c();
             m.MonthDate__c = mx.MonthDate__c;
             mes.add(m);
@@ -72,7 +73,7 @@ global with sharing class ExpensesController {
         }        
         
         for(Integer i = 1; i<=12; i++){ 
-            Date dt = Date.newInstance(2019, i, 01);                
+            Date dt = Date.newInstance(selectedDate, i, 01);                
             MonthlyExpense__c monthly = new MonthlyExpense__c(); 
             monthly.MonthDate__c = dt;
             if(!mes.contains(monthly)){                                 

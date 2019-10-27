@@ -1,4 +1,92 @@
 <template>
-    admin
-    
+    <div class="slds-align_absolute-center" style="width:1000px">
+        <template if:true={monthlyExpense}>
+
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th colspan="2" class="" scope="col">
+                            <div class="slds-text-heading_medium" title="Opportunity Name">2019</div>
+                        </th>
+                        <template for:each={monthlyExpense} for:item="monthly">
+                            <th class="" scope="col" key={monthly.office}>
+                                <div class="slds-truncate" title="Account Name">{monthly.office}</div>
+                            </th>
+                        </template>
+
+                        <th rowspan="3" class="" scope="col">
+                            <div class="slds-truncate" title="Confidence">Summ:</div>
+                        </th>
+
+                    </tr>
+
+
+
+                    <tr class="slds-hint-parent">
+                        <th rowspan="2" data-label="Opportunity Name" scope="row">
+                            <div class="slds-truncate" title="Cloudhub">
+                                <a href="javascript:void(0);" tabindex="-1">Month</a>
+                            </div>
+                        </th>
+
+                        <th data-label="Account Name">
+                            <div class="slds-truncate" title="Cloudhub">Balance now</div>
+                        </th>
+                        <th data-label="Close Date">
+                            <div class="slds-truncate" title="4/14/2015">4/14/2015</div>
+                        </th>
+                        <th data-label="Prospecting">
+                            <div class="slds-truncate" title="Prospecting">Prospecting</div>
+                        </th>
+                        <th data-label="Confidence">
+                            <div class="slds-truncate" title="20%">20%</div>
+                        </th>
+
+
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <th>
+                            <div class="" title="Monthly average">
+                                <a href="javascript:void(0);" tabindex="-1">Monthly average</a>
+                            </div>
+                        </th>
+                        <th data-label="Account Name">
+                            <div class="slds-truncate" title="Cloudhub">Cloudhub</div>
+                        </th>
+                        <th data-label="Close Date">
+                            <div class="slds-truncate" title="4/14/2015">4/14/2015</div>
+                        </th>
+                        <th data-label="Prospecting">
+                            <div class="slds-truncate" title="Prospecting">Prospecting</div>
+                        </th>
+
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={monthlyExpense} for:item="monthly">
+                        
+                            <template for:each={monthly.monthlyExpenseList} for:item="monthlyOffice">
+
+                                    <tr key={monthlyOffice.oppy.MonthDate__c}>
+
+                                <th colspan="2" key={monthlyOffice.oppy.MonthDate__c}>
+                                    {monthlyOffice.oppy.MonthDate__c}
+                                </th>
+                                <th key={monthlyOffice.oppy.MonthDate__c}>
+                                    {monthlyOffice.oppy.SpentAmount__c}
+                                </th>
+                                
+                                
+                            </tr>
+
+                            </template>
+                        
+
+                    </template>
+                </tbody>
+            </table>
+        </template>
+    </div>
 </template>

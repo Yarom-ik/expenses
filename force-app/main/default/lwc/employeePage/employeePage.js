@@ -14,8 +14,8 @@ import ID_FIELD from '@salesforce/schema/ExpenseCard__c.Id';
 
 const COLS = [
   { label: 'Description', fieldName: 'Description__c', fixedWidth: 180, editable: true },
-  { label: 'Amount', fieldName: 'Amount__c', type: 'phone', fixedWidth: 80, editable: true },
-  { label: 'Action', type: 'button', fixedWidth: 80, typeAttributes: { variant: 'base', label: 'Delete', name: 'delete', onclick: 'deleteExpenseCard' } }
+  { label: 'Amount', fieldName: 'Amount__c', type: 'currency', fixedWidth: 90, editable: true },
+  { label: 'Action', type: 'button', fixedWidth: 90, typeAttributes: { variant: 'base', label: 'Delete', name: 'delete', onclick: 'deleteExpenseCard' } }
 ];
 
 export default class EmployeePage extends LightningElement {
@@ -40,7 +40,7 @@ export default class EmployeePage extends LightningElement {
   }
 
   loadMontlyExpense() {
-    getMouthlyExpense({ conId: this.authUser.Id })
+    getMouthlyExpense({ conId: this.authUser.Id, selectedDate: this.selectedYear })
       .then(result => {
         this.monthlyExpense = [];
         this.monthlyExpense = result;
@@ -97,8 +97,12 @@ export default class EmployeePage extends LightningElement {
 
   selectYearButton(event) {
     this.selectedYear = event.target.value;
+    this.selectMounth = "";
+    // this.selectedDate = "";
     window.console.log('SelectedYearButton = ' + this.selectedYear);
     const allTabs = this.template.querySelectorAll('div>button');
+    this.loadMontlyExpense();
+    this.expensesCard = [];
     allTabs.forEach((elm) => {
       // eslint-disable-next-line no-console
       console.log(elm);
@@ -106,6 +110,11 @@ export default class EmployeePage extends LightningElement {
       elm.classList.add("slds-button_neutral");
     })
     event.currentTarget.classList.add('slds-button_brand');
+    //clear select button month
+    const allTabsYear = this.template.querySelectorAll('ul>button');
+    allTabsYear.forEach((elm) => {
+      elm.classList.remove("slds-is-active");
+    })
   }
 
   @track expensesCard = [];
@@ -128,7 +137,8 @@ export default class EmployeePage extends LightningElement {
         this.dispatchEvent(
           new ShowToastEvent({
             title: 'Error load card',
-            message: error.body.message,
+            // message: error.body.message,
+            message: 'error.body.message EC-' + error,
             variant: 'error'
           })
         );
@@ -159,6 +169,7 @@ export default class EmployeePage extends LightningElement {
         // Clear all draft values
         this.draftValues = [];
         // Display fresh data in the datatable
+        this.loadMontlyExpense();
         this.loadDataExpenseCard();
       }).catch(error => {
         this.dispatchEvent(
