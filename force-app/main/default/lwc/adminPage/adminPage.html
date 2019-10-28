@@ -1,16 +1,24 @@
 <template>
     <div class="slds-align_absolute-center" style="width:1000px">
-        <template if:true={monthlyExpense}>
+        <template if:true={monthlyExpense.dataList}>
 
             <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
                 <thead>
                     <tr class="slds-line-height_reset">
                         <th colspan="2" class="" scope="col">
-                            <div class="slds-text-heading_medium" title="Opportunity Name">2019</div>
+                            <div class="slds-text-heading_medium">
+                            <template if:true={dates4years}>
+                                    <lightning-combobox name="progress"                          
+                                                        value={selectedYear}
+                                                        options={dates4years}
+                                                        onchange={handleChange} >
+                                    </lightning-combobox>
+                              </template>
+                            </div>
                         </th>
-                        <template for:each={monthlyExpense} for:item="monthly">
-                            <th class="" scope="col" key={monthly.office}>
-                                <div class="slds-truncate" title="Account Name">{monthly.office}</div>
+                        <template for:each={monthlyExpense.officeList} for:item="monthly">
+                            <th class="" scope="col" key={monthly.officeName}>
+                                <div class="slds-truncate" title="Account Name">{monthly.officeName}</div>
                             </th>
                         </template>
 
@@ -28,11 +36,16 @@
                                 <a href="javascript:void(0);" tabindex="-1">Month</a>
                             </div>
                         </th>
-
+                        
                         <th data-label="Account Name">
                             <div class="slds-truncate" title="Cloudhub">Balance now</div>
                         </th>
-                        <th data-label="Close Date">
+                        <template for:each={monthlyExpense.officeList} for:item="monthly">
+                                <th class="" scope="col" key={monthly.balanceNow}>
+                                    <div class="slds-truncate" title="Account Name">{monthly.balanceNow}</div>
+                                </th>
+                            </template>
+                        <!-- <th data-label="Close Date">
                             <div class="slds-truncate" title="4/14/2015">4/14/2015</div>
                         </th>
                         <th data-label="Prospecting">
@@ -40,7 +53,7 @@
                         </th>
                         <th data-label="Confidence">
                             <div class="slds-truncate" title="20%">20%</div>
-                        </th>
+                        </th> -->
 
 
                     </tr>
@@ -50,7 +63,12 @@
                                 <a href="javascript:void(0);" tabindex="-1">Monthly average</a>
                             </div>
                         </th>
-                        <th data-label="Account Name">
+                        <template for:each={monthlyExpense.officeList} for:item="monthly">
+                                <th class="" scope="col" key={monthly.monthlyAverage}>
+                                    <div class="slds-truncate" title="Account Name">{monthly.monthlyAverage}</div>
+                                </th>
+                            </template>
+                        <!-- <th data-label="Account Name">
                             <div class="slds-truncate" title="Cloudhub">Cloudhub</div>
                         </th>
                         <th data-label="Close Date">
@@ -58,34 +76,50 @@
                         </th>
                         <th data-label="Prospecting">
                             <div class="slds-truncate" title="Prospecting">Prospecting</div>
-                        </th>
+                        </th> -->
 
 
 
                     </tr>
                 </thead>
                 <tbody>
-                    <template for:each={monthlyExpense} for:item="monthly">
-                        
-                            <template for:each={monthly.monthlyExpenseList} for:item="monthlyOffice">
+                    <template for:each={monthlyExpense.dataList} for:item="monthly">
+                        <tr key={monthly}>
+                            <!-- <th colspan="2" key={monthly}>
+                                        {monthly} 
+                                        
+                                    </th> -->
+                            <th colspan="1">
 
-                                    <tr key={monthlyOffice.oppy.MonthDate__c}>
+                            </th>
 
-                                <th colspan="2" key={monthlyOffice.oppy.MonthDate__c}>
-                                    {monthlyOffice.oppy.MonthDate__c}
+                            <template for:each={monthly} for:item="office">
+
+
+                                <th key={office}>
+                                    {office}
                                 </th>
-                                <th key={monthlyOffice.oppy.MonthDate__c}>
-                                    {monthlyOffice.oppy.SpentAmount__c}
-                                </th>
-                                
-                                
-                            </tr>
-
                             </template>
-                        
+                        </tr>
 
                     </template>
+
                 </tbody>
+                <tfoot>
+                    <tr style="background: #9c9999">
+                        <th colspan="2">
+                            Total:
+                        </th>
+                        <template for:each={monthlyExpense.officeList} for:item="monthly">
+                                <th class="" scope="col" key={monthly.totalAmount}>
+                                    <div class="slds-truncate" title="Account Name">{monthly.totalAmount}</div>
+                                </th>
+                        </template>
+                        <th>
+                                {monthlyExpense.summ}
+                        </th>
+                    </tr>
+                </tfoot>
             </table>
         </template>
     </div>

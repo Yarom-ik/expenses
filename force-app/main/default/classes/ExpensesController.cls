@@ -164,4 +164,16 @@ global with sharing class ExpensesController {
         } 
     }
 
+    @AuraEnabled
+    public static void addBalance(Date selectedDate, String conId, Integer addBalance){
+        System.debug('add Balance= ' + selectedDate +' --> ' + conId +' bal-- ' + addBalance);
+        List<MonthlyExpense__c> MXList = [SELECT Balance__c FROM MonthlyExpense__c WHERE MonthDate__c =:selectedDate AND Keeper__c =:conId LIMIT 1];
+        System.debug('MXList= ' + MXList);
+        if(MXList.size() != 0){
+            MXList[0].Balance__c += addBalance;
+            update MXList; 
+        }
+        
+    }
+
 }

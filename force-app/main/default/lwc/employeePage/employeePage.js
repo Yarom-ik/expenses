@@ -4,6 +4,7 @@ import getMouthlyExpense from '@salesforce/apex/ExpensesController.getMouthlyExp
 import getExpenseCard from '@salesforce/apex/ExpensesController.getExpenseCard';
 import saveExpenseCard from '@salesforce/apex/ExpensesController.saveExpenseCard';
 import deleteExpenseCard from '@salesforce/apex/ExpensesController.deleteExpenseCard';
+import addBalance from '@salesforce/apex/ExpensesController.addBalance';
 
 import { updateRecord } from 'lightning/uiRecordApi';
 //import { refreshApex } from '@salesforce/apex';
@@ -28,7 +29,9 @@ export default class EmployeePage extends LightningElement {
   @track monthlyExpense;
 
   @track openmodel = false;
+  @track openmodelBalance = false;
   @track dateNow;
+
   openmodal() {
     window.console.log('DATE ' + this.dateNow);
     // this.dateNow = Date.now();
@@ -37,6 +40,65 @@ export default class EmployeePage extends LightningElement {
   }
   closeModal() {
     this.openmodel = false;
+  }
+
+  openmodalBalance() {
+    this.openmodelBalance = true;
+  }
+
+  closeModalBalance() {
+    this.openmodelBalance = false;
+  }
+
+  balanceAdd;
+
+  handleSetInputModalBalance(event) {
+    if (event.target.name === 'summ') {
+      this.balanceAdd = event.target.value;
+    }
+  }
+
+  handleAddBalance() {
+    window.console.log('selecM ' + this.selectMounth + ' messageCard ' + this.messageCard);
+    if (this.selectMounth === undefined || this.messageCard === undefined || this.messageCard !== null) {
+      this.dispatchEvent(
+        new ShowToastEvent({
+          title: 'Error',
+          message: 'No selected month',
+          variant: 'error'
+        })
+      );
+    } else {
+      let inputSumm = this.template.querySelector(".inputSumm");
+      let value = inputSumm.value;
+      if (value === "") {
+        inputSumm.setCustomValidity("Please enter Summ");
+      } else {
+        inputSumm.setCustomValidity("");
+      }
+      inputSumm.reportValidity();
+      if (!inputSumm.checkValidity()) {
+        return;
+      }
+      addBalance({ selectedDate: this.selectMounth, conId: this.authUser.Id, addBalance: this.balanceAdd })
+        .then(result => {
+          // eslint-disable-next-line no-console
+          console.log('ssss' + result);
+          this.dispatchEvent(
+            new ShowToastEvent({
+              title: 'Success',
+              message: 'Balance is updated',
+              variant: 'success'
+            })
+          );
+          this.balanceAdd = 0;
+          this.closeModalBalance();
+        })
+        .catch(error => {
+          this.error = error;
+        });
+    }
+
   }
 
   loadMontlyExpense() {
@@ -87,8 +149,6 @@ export default class EmployeePage extends LightningElement {
 
     const allTabs = this.template.querySelectorAll('ul>button');
     allTabs.forEach((elm) => {
-      // eslint-disable-next-line no-console
-      console.log(elm);
       elm.classList.remove("slds-is-active");
     })
     event.currentTarget.classList.add('slds-is-active');
@@ -104,8 +164,6 @@ export default class EmployeePage extends LightningElement {
     this.loadMontlyExpense();
     this.expensesCard = [];
     allTabs.forEach((elm) => {
-      // eslint-disable-next-line no-console
-      console.log(elm);
       elm.classList.remove("slds-button_brand");
       elm.classList.add("slds-button_neutral");
     })
@@ -126,7 +184,7 @@ export default class EmployeePage extends LightningElement {
           window.console.log('ExpensesCards=' + JSON.stringify(result));
           this.expensesCard = [];
           this.expensesCard = result;
-          this.messageCard = '';
+          this.messageCard = undefined;
         } else {
           this.expensesCard = [];
           this.messageCard = 'No data for selected month!';
