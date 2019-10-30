@@ -6,8 +6,6 @@ public with sharing class AdminController {
         @AuraEnabled
         public Decimal summ;     
         @AuraEnabled
-        public List<MonthlyExpense__c> monthlyExpenseList;
-        @AuraEnabled
         public List<List<String>> dataList;
     } 
 
@@ -44,9 +42,9 @@ public with sharing class AdminController {
         List<List<String>> dataList = new List<List<String>>();
 
         for(Integer i = 1; i<=12; i++){ 
-            Date dt = Date.newInstance(selectedDate, i, 01);                                
+            DateTime dt = DateTime.newInstance(selectedDate, i, 01);                                
             dataList.add(new List<String>());
-            dataList.get(i-1).add(string.valueof(dt));                      
+            dataList.get(i-1).add(string.valueof(dt.format('MMMM')));                      
         }    
         System.debug('dataList= ' + dataList );   
         
@@ -62,10 +60,9 @@ public with sharing class AdminController {
             cls.balanceNow = 0;
             for(Integer i = 0; i<12; i++){ 
                 for(MonthlyExpense__c details:c.MonthlyExpenses__r){
-                    System.debug('MonthDate__c= ' + details.MonthDate__c);
+                    System.debug('MonthDate__c= ' + details.MonthDate__c);                    
                     
-                    
-                    if(Date.valueOf(dataList[i][0]) == details.MonthDate__c){
+                    if(Date.newInstance(selectedDate, i + 1, 01) == details.MonthDate__c){
                         cls.balanceNow += details.Reminder__c;
                         cls.totalAmount += details.SpentAmount__c;
                         System.debug('mes ==' );
@@ -86,7 +83,7 @@ public with sharing class AdminController {
 
         for(Integer i = 0; i < 12; i++){
             Decimal summ = 0;
-            for(Integer n = 1; n < 4; n++){
+            for(Integer n = 1; n <= monthlylist.size(); n++){
                 summ += decimal.valueOf(dataList[i][n]); 
                 System.debug(dataList[i][n]);
                 

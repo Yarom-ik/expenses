@@ -7,7 +7,6 @@ import deleteExpenseCard from '@salesforce/apex/ExpensesController.deleteExpense
 import addBalance from '@salesforce/apex/ExpensesController.addBalance';
 
 import { updateRecord } from 'lightning/uiRecordApi';
-//import { refreshApex } from '@salesforce/apex';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import DESCRIPTION_FIELD from '@salesforce/schema/ExpenseCard__c.Description__c';
 import AMOUNT_FIELD from '@salesforce/schema/ExpenseCard__c.Amount__c';
@@ -27,10 +26,24 @@ export default class EmployeePage extends LightningElement {
   @api authUser;
 
   @track monthlyExpense;
+  @track expensesCard = [];
+  newExpenseCard = { 'sobjectType': 'ExpenseCard__c' };
+
+  @track columns = COLS;
+  @track draftValues = [];
 
   @track openmodel = false;
   @track openmodelBalance = false;
   @track dateNow;
+
+  dates4years = [];
+
+  selectMounth;
+  selectedYear = new Date().getFullYear();
+  selectedDate;
+
+  balanceAdd;
+  runAddBalance = undefined;
 
   openmodal() {
     window.console.log('DATE ' + this.dateNow);
@@ -38,29 +51,23 @@ export default class EmployeePage extends LightningElement {
     this.dateNow = new Date().toISOString();
     this.openmodel = true;
   }
+
   closeModal() {
     this.openmodel = false;
   }
 
+  logoutUser() {
+    localStorage.removeItem('authUser');
+    // Creates the event with the data next step.
+    const selectedEvent = new CustomEvent("showvaluechange", {
+      detail: 0
+    });
+    // Dispatches the event.
+    this.dispatchEvent(selectedEvent);
+  }
+
   openmodalBalance() {
-    this.openmodelBalance = true;
-  }
-
-  closeModalBalance() {
-    this.openmodelBalance = false;
-  }
-
-  balanceAdd;
-
-  handleSetInputModalBalance(event) {
-    if (event.target.name === 'summ') {
-      this.balanceAdd = event.target.value;
-    }
-  }
-
-  handleAddBalance() {
-    window.console.log('selecM ' + this.selectMounth + ' messageCard ' + this.messageCard);
-    if (this.selectMounth === undefined || this.messageCard === undefined || this.messageCard !== null) {
+    if (this.selectMounth === undefined || this.runAddBalance === undefined) {
       this.dispatchEvent(
         new ShowToastEvent({
           title: 'Error',
@@ -69,36 +76,49 @@ export default class EmployeePage extends LightningElement {
         })
       );
     } else {
-      let inputSumm = this.template.querySelector(".inputSumm");
-      let value = inputSumm.value;
-      if (value === "") {
-        inputSumm.setCustomValidity("Please enter Summ");
-      } else {
-        inputSumm.setCustomValidity("");
-      }
-      inputSumm.reportValidity();
-      if (!inputSumm.checkValidity()) {
-        return;
-      }
-      addBalance({ selectedDate: this.selectMounth, conId: this.authUser.Id, addBalance: this.balanceAdd })
-        .then(result => {
-          // eslint-disable-next-line no-console
-          console.log('ssss' + result);
-          this.dispatchEvent(
-            new ShowToastEvent({
-              title: 'Success',
-              message: 'Balance is updated',
-              variant: 'success'
-            })
-          );
-          this.balanceAdd = 0;
-          this.closeModalBalance();
-        })
-        .catch(error => {
-          this.error = error;
-        });
+      this.openmodelBalance = true;
     }
+  }
 
+  closeModalBalance() {
+    this.openmodelBalance = false;
+  }
+
+  handleSetInputModalBalance(event) {
+    if (event.target.name === 'summ') {
+      this.balanceAdd = event.target.value;
+    }
+  }
+
+  handleAddBalance() {
+    let inputSumm = this.template.querySelector(".inputSumm");
+    let value = inputSumm.value;
+    if (value === "") {
+      inputSumm.setCustomValidity("Please enter Summ");
+    } else {
+      inputSumm.setCustomValidity("");
+    }
+    inputSumm.reportValidity();
+    if (!inputSumm.checkValidity()) {
+      return;
+    }
+    addBalance({ selectedDate: this.selectMounth, conId: this.authUser.Id, addBalance: this.balanceAdd })
+      .then(() => {
+        this.dispatchEvent(
+          new ShowToastEvent({
+            title: 'Success',
+            message: 'Balance is updated',
+            variant: 'success'
+          })
+        );
+        this.balanceAdd = 0;
+        this.loadMontlyExpense();
+        this.closeModalBalance();
+      }
+      )
+      .catch(error => {
+        this.error = error;
+      });
   }
 
   loadMontlyExpense() {
@@ -106,6 +126,7 @@ export default class EmployeePage extends LightningElement {
       .then(result => {
         this.monthlyExpense = [];
         this.monthlyExpense = result;
+        // this.runAddBalance = undefined;
         window.console.log('monthlyExpense ' + JSON.stringify(this.monthlyExpense));
 
       })
@@ -131,14 +152,7 @@ export default class EmployeePage extends LightningElement {
         });
       }
     }
-    // this.loadDataExpenseCard();
   }
-
-  dates4years = [];
-
-  selectMounth;
-  selectedYear = new Date().getFullYear();
-  selectedDate;
 
   showExpenseCard(event) {
     window.console.log('SelectedYear = ' + this.selectedYear);
@@ -175,8 +189,6 @@ export default class EmployeePage extends LightningElement {
     })
   }
 
-  @track expensesCard = [];
-
   loadDataExpenseCard() {
     getExpenseCard({ selectedDate: this.selectedDate, conId: this.authUser.Id })
       .then(result => {
@@ -185,9 +197,11 @@ export default class EmployeePage extends LightningElement {
           this.expensesCard = [];
           this.expensesCard = result;
           this.messageCard = undefined;
+          this.runAddBalance = true;
         } else {
           this.expensesCard = [];
           this.messageCard = 'No data for selected month!';
+          this.runAddBalance = undefined;
         }
 
       })
@@ -203,9 +217,6 @@ export default class EmployeePage extends LightningElement {
         this.expensesCard = undefined;
       });
   }
-
-  @track columns = COLS;
-  @track draftValues = [];
 
   handleSave(event) {
     const fields = {};
@@ -267,8 +278,6 @@ export default class EmployeePage extends LightningElement {
           );
         });
   }
-
-  newExpenseCard = { 'sobjectType': 'ExpenseCard__c' };
 
   handleSetInputModal(event) {
     if (event.target.name === 'amount') {

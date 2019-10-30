@@ -173,7 +173,6 @@ global with sharing class ExpensesController {
             MXList[0].Balance__c += addBalance;
             update MXList; 
         }
-        
     }
 
 }

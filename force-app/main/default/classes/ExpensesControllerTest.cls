@@ -111,4 +111,14 @@ public class ExpensesControllerTest {
         System.assertEquals(0, ecNew.size());
     }
     
+    @isTest
+    public static void addBalanceTest(){
+        Date dat = date.newInstance(2019, 02, 01);
+        Contact con = [SELECT id, Admin__c, Office__c FROM Contact WHERE Email ='test@t.com' AND Password__c ='1' LIMIT 1];
+        Test.startTest();
+        ExpensesController.addBalance(dat, con.Id, 5);
+        Test.stopTest();
+        MonthlyExpense__c mx = [SELECT Balance__c FROM MonthlyExpense__c WHERE MonthDate__c =:dat AND Keeper__c =:con.Id LIMIT 1];
+        System.assertEquals(107, mx.Balance__c);
+    }
 }

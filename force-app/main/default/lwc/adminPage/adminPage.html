@@ -5,103 +5,70 @@
             <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
                 <thead>
                     <tr class="slds-line-height_reset">
-                        <th colspan="2" class="" scope="col">
+                        <th colspan="2" class="" scope="col" style="background: #beeef1">
                             <div class="slds-text-heading_medium">
-                            <template if:true={dates4years}>
-                                    <lightning-combobox name="progress"                          
-                                                        value={selectedYear}
-                                                        options={dates4years}
-                                                        onchange={handleChange} >
+                                <template if:true={dates4years}>
+                                    <lightning-combobox name="progress" value={selectedYear} options={dates4years}
+                                        onchange={handleChange}>
                                     </lightning-combobox>
-                              </template>
+                                </template>
                             </div>
                         </th>
                         <template for:each={monthlyExpense.officeList} for:item="monthly">
-                            <th class="" scope="col" key={monthly.officeName}>
+                            <th class="" scope="col" key={monthly.officeName} style="background: #beeef1; text-align: center">
                                 <div class="slds-truncate" title="Account Name">{monthly.officeName}</div>
                             </th>
                         </template>
-
-                        <th rowspan="3" class="" scope="col">
-                            <div class="slds-truncate" title="Confidence">Summ:</div>
+                        <th style="background: #d63810; text-align: right">   
+                            <lightning-button label="Logout" onclick={logoutUser}></lightning-button> 
                         </th>
-
-                    </tr>
-
-
-
-                    <tr class="slds-hint-parent">
-                        <th rowspan="2" data-label="Opportunity Name" scope="row">
-                            <div class="slds-truncate" title="Cloudhub">
-                                <a href="javascript:void(0);" tabindex="-1">Month</a>
-                            </div>
-                        </th>
-                        
-                        <th data-label="Account Name">
-                            <div class="slds-truncate" title="Cloudhub">Balance now</div>
-                        </th>
-                        <template for:each={monthlyExpense.officeList} for:item="monthly">
-                                <th class="" scope="col" key={monthly.balanceNow}>
-                                    <div class="slds-truncate" title="Account Name">{monthly.balanceNow}</div>
-                                </th>
-                            </template>
-                        <!-- <th data-label="Close Date">
-                            <div class="slds-truncate" title="4/14/2015">4/14/2015</div>
-                        </th>
-                        <th data-label="Prospecting">
-                            <div class="slds-truncate" title="Prospecting">Prospecting</div>
-                        </th>
-                        <th data-label="Confidence">
-                            <div class="slds-truncate" title="20%">20%</div>
-                        </th> -->
 
 
                     </tr>
                     <tr class="slds-hint-parent">
-                        <th>
-                            <div class="" title="Monthly average">
-                                <a href="javascript:void(0);" tabindex="-1">Monthly average</a>
+                        <th rowspan="2" scope="row" style="background: #cfd7d8; vertical-align: bottom">
+                            <div class="slds-truncate slds-text-heading_medium">
+                                Month
                             </div>
                         </th>
+
+                        <th style="background: #7ca6ab; color: red">
+                            <div class="slds-text-heading_medium">Balance now</div>
+                        </th>
                         <template for:each={monthlyExpense.officeList} for:item="monthly">
-                                <th class="" scope="col" key={monthly.monthlyAverage}>
-                                    <div class="slds-truncate" title="Account Name">{monthly.monthlyAverage}</div>
-                                </th>
-                            </template>
-                        <!-- <th data-label="Account Name">
-                            <div class="slds-truncate" title="Cloudhub">Cloudhub</div>
+                            <th class="" scope="col" key={monthly.balanceNow} style="background: #7ca6ab; text-align: center">
+                                <div class="slds-truncate" title="Account Name">{monthly.balanceNow}</div>
+                            </th>
+                        </template>
+                        <th rowspan="2" class="" scope="col" style="background: #fbf539; vertical-align: bottom; color: red">
+                            <div class="slds-truncate slds-text-heading_medium" title="Confidence">Summ:</div>
                         </th>
-                        <th data-label="Close Date">
-                            <div class="slds-truncate" title="4/14/2015">4/14/2015</div>
+                    </tr>
+                    <tr>
+                        <th style="background: #efe7af; color: red">
+                            <div class="slds-text-heading_small"> Monthly average </div>
                         </th>
-                        <th data-label="Prospecting">
-                            <div class="slds-truncate" title="Prospecting">Prospecting</div>
-                        </th> -->
-
-
-
+                        <template for:each={monthlyExpense.officeList} for:item="monthly">
+                            <th class="" scope="col" key={monthly.monthlyAverage} style="background: #efe7af; text-align: center">
+                                <div class="slds-truncate">{monthly.monthlyAverage}</div>
+                            </th>
+                        </template>
                     </tr>
                 </thead>
                 <tbody>
                     <template for:each={monthlyExpense.dataList} for:item="monthly">
                         <tr key={monthly}>
                             <!-- <th colspan="2" key={monthly}>
-                                        {monthly} 
-                                        
+                                        {monthly}                                         
                                     </th> -->
                             <th colspan="1">
-
                             </th>
-
                             <template for:each={monthly} for:item="office">
-
-
                                 <th key={office}>
                                     {office}
                                 </th>
                             </template>
                         </tr>
-
                     </template>
 
                 </tbody>
@@ -111,12 +78,12 @@
                             Total:
                         </th>
                         <template for:each={monthlyExpense.officeList} for:item="monthly">
-                                <th class="" scope="col" key={monthly.totalAmount}>
-                                    <div class="slds-truncate" title="Account Name">{monthly.totalAmount}</div>
-                                </th>
+                            <th scope="col" key={monthly.totalAmount} style="text-align: center">
+                                <div class="slds-truncate" title="Account Name">{monthly.totalAmount}</div>
+                            </th>
                         </template>
-                        <th>
-                                {monthlyExpense.summ}
+                        <th style="text-align: center">
+                            {monthlyExpense.summ}
                         </th>
                     </tr>
                 </tfoot>
