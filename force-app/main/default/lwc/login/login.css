@@ -1,3 +1,7 @@
 .slds-card__footer{
     text-align: left;
 }
+
+.error_active{    
+    color: red;
+}

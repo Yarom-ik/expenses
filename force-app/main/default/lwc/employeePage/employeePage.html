@@ -7,14 +7,14 @@
                         <header class="slds-media slds-wrap slds-media_center slds-has-flexi-truncate bundle-heading">
                             <div class="slds-col slds-size_1-of-10 slds-col_bump-right slds-media__body">
                                 <h1 class="slds-card__header-title">
-                                    Expenses
+                                    Expenses &nbsp;
                                     <template if:true={authUser}>
-                                        {authUser.Office__c}
+                                           {authUser.Office__c}
                                     </template>
                                 </h1>
                             </div>
-                            <div class="slds-col slds-align_absolute-center slds-text-heading_small">
-                                balanse $
+                            <div class="slds-col slds-align_absolute-center slds-text-heading_medium">
+                                balanse: $
                                 <template if:true={monthlyExpense}>
                                     {monthlyExpense.Balance}
                                 </template>
@@ -27,7 +27,6 @@
                         </header>
                     </div>
                 </div>
-
                 <ul class="slds-grid slds-page-header__detail-row">
                     <li class="slds-col">
                         <div class="card-body slds-grid">
@@ -49,29 +48,7 @@
                                                         <h2>Income</h2>
                                                     </div>
                                                 </div>
-                                                <ul aria-describedby="entity-header">
-                                                    <!-- <li class="slds-nav-vertical__item slds-is-active" onclick={showM}
-                                                        id="1">
-
-                                                        <div class="slds-grid slds-gutters">
-                                                            <div class="slds-col" style="width:120px">
-                                                                <a onclick={showM} name="1"
-                                                                    class="slds-nav-vertical__action"
-                                                                    aria-current="true">January</a>
-
-                                                            </div>
-                                                            <div class="slds-col slds-p-top_x-small" style="width:90px">
-                                                                <span class="slds-badge ">
-                                                                    <span class="slds-assistive-text">:</span>3232
-                                                                </span>
-                                                            </div>
-                                                            <div class="slds-col slds-p-top_x-small" style="width:90px">
-                                                                <span class="slds-badge slds-col_bump-left">
-                                                                    <span class="slds-assistive-text">:</span>323
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </li> -->
+                                                <ul aria-describedby="entity-header">                                               
                                                     <template if:true={monthlyExpense}>
                                                         <template for:each={monthlyExpense.monthlyExpenseList}
                                                             for:item="monthly">
@@ -82,14 +59,12 @@
                                                                 <div class="slds-grid slds-gutters">
                                                                     <div class="slds-col" style="width:120px">
                                                                         <a class="slds-nav-vertical__action">
-
                                                                             <lightning-formatted-date-time
                                                                                 value={monthly.oppy.MonthDate__c}
                                                                                 month="long">
                                                                             </lightning-formatted-date-time>
                                                                         </a>
                                                                     </div>
-
                                                                     <div class="slds-col slds-p-top_x-small"
                                                                         style="width:90px">
                                                                         <span class="slds-badge">
@@ -99,7 +74,6 @@
                                                                                     class="slds-assistive-text">:</span>{monthly.oppy.SpentAmount__c}
                                                                             </template>
                                                                         </span>
-
                                                                     </div>
                                                                     <div class="slds-col slds-p-top_x-small"
                                                                         style="width:90px">
@@ -110,16 +84,10 @@
                                                                             </template>
                                                                         </span>
                                                                     </div>
-
                                                                 </div>
                                                             </button>
                                                         </template>
-                                                    </template>
-                                                    <!-- <li class="slds-nav-vertical__item">
-                                                        <a href="javascript:void(0);"
-                                                            class="slds-nav-vertical__action">Private
-                                                            Reports</a>
-                                                    </li> -->
+                                                    </template>                                                  
                                                 </ul>
                                                 <!-- total -->
                                                 <div class="total">
@@ -163,12 +131,23 @@
                                 <!-- 1 -->
                             </div>
                             <div
-                                class="descriptor slds-col slds-grow-none slds-size_4-of-7 slds-p-horizontal_small word-wrap">
+                                class="descriptor slds-col slds-grow-none slds-size_5-of-7 slds-p-horizontal_small word-wrap">
                                 <!-- 2 -->
-                                <div class="slds-scrollable_y" style="height:37rem; width:35rem">
+                                <div class="slds-scrollable_y" style="height:37rem; width:39rem">
+                                    <template if:true={loadDataSpinner}>
+                                        <!-- <lightning-spinner variant="brand" alternative-text="Loading" size="medium"></lightning-spinner> -->
+                                        <div class="demo-only" style="height:6rem">
+                                                <div class="slds-spinner_container">
+                                                  <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                                                    <span class="slds-assistive-text">Loading</span>
+                                                    <div class="slds-spinner__dot-a"></div>
+                                                    <div class="slds-spinner__dot-b"></div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                    </template>
                                     <template if:true={expensesCard}>
                                         <lightning-accordion class="example-accordion">
-                                            <!-- onsectiontoggle={handleToggleSection} -->
                                             <template for:each={expensesCard} for:item="card">
                                                 <lightning-accordion-section key={card.cardDateUnique}
                                                     label={card.cardDateUnique}>
@@ -178,9 +157,6 @@
                                                         hide-checkbox-column="false" onrowaction={deleteExpenseCard}
                                                         draft-values={draftValues}>
                                                     </lightning-datatable>
-                                                    <!-- <div class="slds-m-around--medium">
-                                                    <p>Total: {card.totalSum}</p>
-                                                </div> -->
                                                     <dl class="slds-dl_horizontal slds-p-left_xx-large">
                                                         <dt class="slds-dl_horizontal__label slds-text-heading_small">
                                                             Total:
@@ -189,7 +165,6 @@
                                                             class="slds-dl_horizontal__detail slds-p-left_xx-large slds-text-heading_small">
                                                             ${card.totalSum}</dd>
                                                     </dl>
-
                                                 </lightning-accordion-section>
                                             </template>
                                         </lightning-accordion>
@@ -230,7 +205,6 @@
                             </div>
                             <lightning-textarea max-length="200" class="inputDescription" onchange={handleSetInputModal}
                                 name="description" label="Description" placeholder="Text..."></lightning-textarea>
-
                         </div>
                     </div>
                     <footer class="slds-modal__footer">
@@ -244,7 +218,6 @@
             <div class="slds-backdrop slds-backdrop_open"></div>
         </div>
     </template>
-
     <!-- add Balanse -->
     <template if:true={openmodelBalance}>
         <div class="demo-only" style="height: 640px;">
@@ -265,9 +238,7 @@
                             <div style="width: 150px;">
                                 <lightning-input type="number" class="inputSumm" onchange={handleSetInputModalBalance}
                                     name="summ"  label="Summ" placeholder="Summ..."></lightning-input>                               
-                            </div>
-                            
-
+                            </div>                           
                         </div>
                     </div>
                     <footer class="slds-modal__footer">
@@ -281,5 +252,4 @@
             <div class="slds-backdrop slds-backdrop_open"></div>
         </div>
     </template>
-
 </template>

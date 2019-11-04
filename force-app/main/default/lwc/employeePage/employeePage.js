@@ -45,9 +45,9 @@ export default class EmployeePage extends LightningElement {
   balanceAdd;
   runAddBalance = undefined;
 
+  @track loadDataSpinner = false;
+
   openmodal() {
-    window.console.log('DATE ' + this.dateNow);
-    // this.dateNow = Date.now();
     this.dateNow = new Date().toISOString();
     this.openmodel = true;
   }
@@ -58,11 +58,9 @@ export default class EmployeePage extends LightningElement {
 
   logoutUser() {
     localStorage.removeItem('authUser');
-    // Creates the event with the data next step.
     const selectedEvent = new CustomEvent("showvaluechange", {
       detail: 0
     });
-    // Dispatches the event.
     this.dispatchEvent(selectedEvent);
   }
 
@@ -126,9 +124,6 @@ export default class EmployeePage extends LightningElement {
       .then(result => {
         this.monthlyExpense = [];
         this.monthlyExpense = result;
-        // this.runAddBalance = undefined;
-        window.console.log('monthlyExpense ' + JSON.stringify(this.monthlyExpense));
-
       })
       .catch(error => {
         this.error = error;
@@ -137,7 +132,6 @@ export default class EmployeePage extends LightningElement {
   }
 
   connectedCallback() {
-    window.console.log('run load ' + this.authUser.Id);
     this.loadMontlyExpense();
     for (let i = -2; i <= 1; i++) {
       if (this.selectedYear === new Date().getFullYear() + i) {
@@ -155,12 +149,9 @@ export default class EmployeePage extends LightningElement {
   }
 
   showExpenseCard(event) {
-    window.console.log('SelectedYear = ' + this.selectedYear);
-    window.console.log('selectedMounthNOW - ' + event.target.value);
     this.selectMounth = event.target.value;
     this.selectedDate = new Date(this.selectMounth);
     this.selectedDate.setFullYear(this.selectedYear);
-
     const allTabs = this.template.querySelectorAll('ul>button');
     allTabs.forEach((elm) => {
       elm.classList.remove("slds-is-active");
@@ -172,8 +163,6 @@ export default class EmployeePage extends LightningElement {
   selectYearButton(event) {
     this.selectedYear = event.target.value;
     this.selectMounth = "";
-    // this.selectedDate = "";
-    window.console.log('SelectedYearButton = ' + this.selectedYear);
     const allTabs = this.template.querySelectorAll('div>button');
     this.loadMontlyExpense();
     this.expensesCard = [];
@@ -190,16 +179,18 @@ export default class EmployeePage extends LightningElement {
   }
 
   loadDataExpenseCard() {
+    this.loadDataSpinner = true;
     getExpenseCard({ selectedDate: this.selectedDate, conId: this.authUser.Id })
       .then(result => {
         if (result) {
-          window.console.log('ExpensesCards=' + JSON.stringify(result));
           this.expensesCard = [];
           this.expensesCard = result;
+          this.loadDataSpinner = false;
           this.messageCard = undefined;
           this.runAddBalance = true;
         } else {
           this.expensesCard = [];
+          this.loadDataSpinner = false;
           this.messageCard = 'No data for selected month!';
           this.runAddBalance = undefined;
         }
@@ -209,12 +200,11 @@ export default class EmployeePage extends LightningElement {
         this.dispatchEvent(
           new ShowToastEvent({
             title: 'Error load card',
-            // message: error.body.message,
             message: 'error.body.message EC-' + error,
             variant: 'error'
           })
         );
-        this.expensesCard = undefined;
+        this.expensesCard = undefined;       
       });
   }
 
@@ -237,7 +227,7 @@ export default class EmployeePage extends LightningElement {
         );
         // Clear all draft values
         this.draftValues = [];
-        // Display fresh data in the datatable
+        // Display refresh data in the datatable
         this.loadMontlyExpense();
         this.loadDataExpenseCard();
       }).catch(error => {

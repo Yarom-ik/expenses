@@ -61,7 +61,6 @@ public class ExpensesControllerTest {
         List<ExpensesController.Expenses> resultEc = ExpensesController.getExpenseCard(dat, con.Id);
         Test.stopTest();
         System.assertEquals(4, resultEc.size());
-        System.debug('--> ' + resultEc);
         System.assertEquals(7, resultEc[0].totalSum);
         Date dateCart = date.newInstance(2019, 02, 02);
         System.assertEquals(dateCart, resultEc[0].cardDateUnique);

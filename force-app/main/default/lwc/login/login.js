@@ -29,13 +29,9 @@ export default class Login extends LightningElement {
     setLoginPassword(event) {
         if (event.target.name === 'login') {
             this.login = event.target.value;
-            // eslint-disable-next-line no-console
-            console.log('login ' + this.login);
         }
         else if (event.target.name === 'password') {
             this.password = event.target.value;
-            // eslint-disable-next-line no-console
-            console.log('login ' + this.password);
         }
     }
 
@@ -56,17 +52,12 @@ export default class Login extends LightningElement {
             inputPassword.setCustomValidity("");
         }
         inputPassword.reportValidity();
-        window.console.log('login= ' + inputLogin.validity.valid);
-        window.console.log('pass= ' + inputPassword.validity.valid);
-
         if ((!inputLogin.validity.valid) || (!inputPassword.validity.valid)) {
-            window.console.log('false = return');
             return;
         }
         runLoginUser({ login: this.login, pass: this.password })
             .then(result => {
                 if (result && result != null) {
-                    window.console.log('result ===> ' + JSON.stringify(result));
                     this.authUser = result;
                     if (this.authUser.Admin__c === true) {
                         this.showPageValue = 2;
@@ -76,9 +67,7 @@ export default class Login extends LightningElement {
                     localStorage.setItem('authUser', JSON.stringify(this.authUser));
                     this.showPage();
                     this.sendContact();
-                } else {
-                    window.console.log('return null ');
-                }
+                } 
             })
             .catch(error => {
                 this.error = error.message;

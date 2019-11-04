@@ -1,15 +1,26 @@
+@RestResource(urlMapping='/Account/*')
 global with sharing class ExpensesController {
-
+    
+    //test
+    //@HttpGet
+    // global static Account doGet() {
+    // RestRequest req = RestContext.request;
+    // RestResponse res = RestContext.response;
+    //String accountId = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+    //  Account result = [SELECT Id, Name, Phone, Website FROM Account LIMIT 1];
+    //  return result;
+    //}
+    
+    @HttpPOST
     @AuraEnabled(cacheable=true)
     global static Contact loginUser(String login, String pass){
-       Contact con = [SELECT id, Admin__c, Office__c FROM Contact WHERE Email =:login AND Password__c =:pass LIMIT 1];
-
-        System.debug('Contact = ' + con);
-
+        Contact con = new Contact(); 
+        con = [SELECT id, Admin__c, Office__c FROM Contact WHERE Email =:login AND Password__c =:pass LIMIT 1];
+   
         return con;
         
     }
-
+    
     public class MonthlyExpense{
         @AuraEnabled
         public Decimal Balance;
@@ -20,9 +31,9 @@ global with sharing class ExpensesController {
         @AuraEnabled
         public List<MonthlyExpenseWrapper> monthlyExpenseList;
     }
-
+    
     public class MonthlyExpenseWrapper implements Comparable {
-
+        
         @AuraEnabled
         public MonthlyExpense__c oppy;    
         // Constructor
@@ -44,23 +55,20 @@ global with sharing class ExpensesController {
             }        
             return returnValue;       
         }
-}
-
+    }
+    
     @AuraEnabled
     public static MonthlyExpense getMouthlyExpense(String conId, Integer selectedDate){
-
-        System.debug('getMouthlyExpenseDATE= ' + selectedDate);
-        // Date selectedYear = Date.newInstance(selectedDate,)
-              
+        
         List<MonthlyExpense__c> monthlylist = [SELECT Balance__c, MonthDate__c, SpentAmount__c, Reminder__c FROM MonthlyExpense__c WHERE Keeper__c =:conId AND CALENDAR_YEAR(MonthDate__c) =: selectedDate];   
         MonthlyExpenseWrapper[] oppyList = new List<MonthlyExpenseWrapper>();         
-
+        
         MonthlyExpense monthlyExpense = new MonthlyExpense();
         
         monthlyExpense.totalAmount = 0;
         monthlyExpense.totalIncome = 0;
         monthlyExpense.Balance = 0;
-
+        
         List<MonthlyExpense__c> mes = new List<MonthlyExpense__c>();
         for(MonthlyExpense__c mx: monthlylist){
             monthlyExpense.totalAmount += mx.SpentAmount__c; 
@@ -77,21 +85,14 @@ global with sharing class ExpensesController {
             MonthlyExpense__c monthly = new MonthlyExpense__c(); 
             monthly.MonthDate__c = dt;
             if(!mes.contains(monthly)){                                 
-                    // monthlylist.add(monthly);
                 oppyList.add(new MonthlyExpenseWrapper(monthly));
             }                       
         }
-
         oppyList.sort();
-         System.debug('oppyList=== ' + oppyList);
-
-        monthlyExpense.monthlyExpenseList = oppyList;
- 
-        System.debug(' MonthlyExpense__c= ' + monthlyExpense);
-
+        monthlyExpense.monthlyExpenseList = oppyList; 
         return monthlyExpense;        
     }
-
+    
     public class Expenses{
         @AuraEnabled
         public date cardDateUnique;
@@ -100,28 +101,24 @@ global with sharing class ExpensesController {
         @AuraEnabled
         public List<ExpenseCard__c> expenseCardList;
     }
-
+    
     @AuraEnabled
     public static  List<Expenses> getExpenseCard(Date selectedDate, String conId){
-
-        System.debug('selecteddate= ' + selectedDate);
+        
         List<Expenses> m1 = new List<Expenses>();
-
         Set<Date> dates = new Set<Date>();
         for(AggregateResult ar : [SELECT CardDate__c FROM ExpenseCard__c WHERE MonthlyExpense__r.Keeper__c =:conId AND MonthlyExpense__r.MonthDate__c =: selectedDate GROUP BY CardDate__c ORDER BY CardDate__c ASC]){
             dates.add((Date) ar.get('CardDate__c'));    
         }
-        System.debug('dates = '+ dates);
         if(dates == null || dates.isEmpty()){
             return null;
         }
-
+        
         ExpenseCard__c[] expenseCards = [SELECT CardDate__c, Description__c, Amount__c FROM ExpenseCard__c WHERE CardKeeper__c =:conId AND CardDate__c IN :dates ORDER BY CardDate__c ASC];
-        System.debug('expenseCards = '+ expenseCards);
         if(expenseCards != null){
             for (Date dd : dates){
-                    List<ExpenseCard__c> ex = new List<ExpenseCard__c>();
-                    Decimal summ = 0;
+                List<ExpenseCard__c> ex = new List<ExpenseCard__c>();
+                Decimal summ = 0;
                 Expenses exp = new Expenses();
                 for(ExpenseCard__c xx : expenseCards){        
                     if(dd == xx.CardDate__c){
@@ -137,16 +134,11 @@ global with sharing class ExpensesController {
         } else {
             return null;
         }
-       System.debug('m1 ' + m1); 
-
-
-        return m1;
-        
+        return m1;        
     }
-
+    
     @AuraEnabled
     public static string saveExpenseCard(ExpenseCard__c expenseCard){
-        System.debug('expenseCard= ' + expenseCard);
         try {
             insert expenseCard;
         } catch (DmlException e) {
@@ -154,25 +146,23 @@ global with sharing class ExpensesController {
         }
         return 'ok';
     }
-
+    
     @AuraEnabled
     public static void deleteExpenseCard(String expenseCardId){
-       try {
+        try {
             delete [SELECT id FROM ExpenseCard__c WHERE id =: expenseCardId];
         } catch (DmlException e) {
             
         } 
     }
-
+    
     @AuraEnabled
     public static void addBalance(Date selectedDate, String conId, Integer addBalance){
-        System.debug('add Balance= ' + selectedDate +' --> ' + conId +' bal-- ' + addBalance);
         List<MonthlyExpense__c> MXList = [SELECT Balance__c FROM MonthlyExpense__c WHERE MonthDate__c =:selectedDate AND Keeper__c =:conId LIMIT 1];
-        System.debug('MXList= ' + MXList);
         if(MXList.size() != 0){
             MXList[0].Balance__c += addBalance;
             update MXList; 
         }
     }
-
+    
 }

@@ -1,11 +1,3 @@
-/* .lightning-basecombobox_basecombobox {
-    border-color: none;
-    background-color: none;
-} */
-.slds-table_cell-buffer{
-    padding-left: none
-}
+/* none */
 
-.slds-table_cell-buffer tr>th:first-child, .slds-table_cell-buffer tr>td:first-child, .slds-table--cell-buffer tr>th:first-child, .slds-table--cell-buffer tr>td:first-child{
-    padding-left: none
-}
+/* none */

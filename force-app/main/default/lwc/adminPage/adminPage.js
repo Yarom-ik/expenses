@@ -11,7 +11,6 @@ export default class AdminPage extends LightningElement {
 
   handleChange(event) {
     this.selectedYear = Number(event.detail.value);
-    window.console.log('value= ' + this.selectedYear);
     this.monthlyExpense = [];
     this.loadMontlyExpense();
   }
@@ -19,14 +18,12 @@ export default class AdminPage extends LightningElement {
   connectedCallback() {
     this.loadMontlyExpense();
     for (let i = -2; i <= 1; i++) {
-
       this.dates4years.push({
         label: 'Regional Expenses ' + (new Date().getFullYear() + i).toString(),
         value: new Date().getFullYear() + i
       });
 
     }
-    window.console.log('dates- ' + this.dates4years);
   }
 
   logoutUser() {
@@ -44,8 +41,6 @@ export default class AdminPage extends LightningElement {
       .then(result => {
         this.monthlyExpense = [];
         this.monthlyExpense = result;
-        window.console.log('monthlyExpense ' + JSON.stringify(this.monthlyExpense));
-
       })
       .catch(error => {
         this.error = error;

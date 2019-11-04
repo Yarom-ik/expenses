@@ -13,29 +13,27 @@
                             <div class="container-fluid">
                                 <div class="form-group">
                                     <template if:true={message}>
-                                        <div class="error active">
+                                        <div class="error_active">
                                             {message}
                                         </div>
                                     </template>
                                     <template if:true={error}>
-                                        <div class="error active">
+                                        <div class="error_active">
                                             {error}
                                         </div>
                                     </template>
                                     <lightning-input type="text" class='login' name='login' onchange={setLoginPassword}
                                         label="Login" placeholder="Enter your username"></lightning-input>
-
-                                    <lightning-input type="text" name="password" class="inpPassword"
+                                    <lightning-input type="password" name="password" class="inpPassword"
                                         onchange={setLoginPassword} label="Password" placeholder="Password">
                                     </lightning-input>
                                     <div class="slds-p-top_large">
                                         <button type="submit" onclick={handleLoginUser}
                                             class="slds-button slds-button_brand slds-button_stretch">Login</button>
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </div>
                         </footer>
-
                     </div>
                 </article>
             </div>
